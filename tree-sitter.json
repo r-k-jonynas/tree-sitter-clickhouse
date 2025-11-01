@@ -10,7 +10,8 @@
         "sql"
       ],
       "injection-regex": "^clickhouse$",
-      "class-name": "TreeSitterClickhouse"
+      "class-name": "TreeSitterClickhouse",
+      "highlights": "queries/highlights.scm"
     }
   ],
   "metadata": {
