@@ -1,0 +1,38 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "clickhouse",
+      "camelcase": "Clickhouse",
+      "title": "Clickhouse",
+      "scope": "source.clickhouse",
+      "file-types": [
+        "sql"
+      ],
+      "injection-regex": "^clickhouse$",
+      "class-name": "TreeSitterClickhouse"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "parser for clickhouse queries and ddl",
+    "authors": [
+      {
+        "name": "rkj"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/tree-sitter/tree-sitter-clickhouse"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
