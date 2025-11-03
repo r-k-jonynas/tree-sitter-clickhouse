@@ -1,0 +1,303 @@
+==================
+Basic CREATE TABLE
+==================
+
+CREATE TABLE users (
+  id UInt64,
+  name String
+) ENGINE = MergeTree()
+ORDER BY id;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+CREATE TABLE with lowercase SQL keywords (types/engines are case-sensitive)
+==================
+
+create table events (
+  event_id UInt64,
+  event_name String
+) engine = MergeTree()
+order by event_id;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+Lowercase type names should fail (case-sensitive)
+==================
+
+CREATE TABLE bad (
+  id uint64
+) ENGINE = MergeTree()
+ORDER BY id;
+
+---
+
+(source_file
+  (ERROR
+    (qualified_table_name
+      (identifier))
+    (ERROR
+      (identifier)
+      (UNEXPECTED 'u')
+      (UNEXPECTED '6')
+      (number))
+    (UNEXPECTED 'd')))
+
+==================
+CREATE TABLE with mixed case keywords (types and engines are case-sensitive)
+==================
+
+CrEaTe TaBlE logs (
+  log_id UInt64,
+  message String,
+  timestamp DateTime
+) EnGiNe = MergeTree()
+OrDeR bY log_id;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+DateTime type is case-insensitive (MySQL/Postgres compatibility)
+==================
+
+CREATE TABLE logs (
+  created datetime,
+  updated DATETIME,
+  deleted DaTeTime
+) ENGINE = MergeTree()
+ORDER BY created;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+CREATE TABLE IF NOT EXISTS
+==================
+
+CREATE TABLE IF NOT EXISTS metrics (
+  value Float64
+) ENGINE = MergeTree()
+ORDER BY value;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+CREATE TABLE with complex types
+==================
+
+CREATE TABLE events (
+  tags Array(String),
+  metadata Map(String, String),
+  optional Nullable(UInt64)
+) ENGINE = MergeTree()
+ORDER BY tags;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (complex_type
+        (primitive_type)))
+    (column_definition
+      (identifier)
+      (complex_type
+        (primitive_type)
+        (primitive_type)))
+    (column_definition
+      (identifier)
+      (complex_type
+        (primitive_type)))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+CREATE TABLE with modifiers
+==================
+
+CREATE TABLE data (
+  id UInt64,
+  value Float64 DEFAULT 0.0,
+  computed UInt64 MATERIALIZED id * 2,
+  nickname String ALIAS name,
+  created DateTime COMMENT 'Creation time'
+) ENGINE = MergeTree()
+ORDER BY id;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (column_modifier
+        (number)))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (column_modifier
+        (binary_expression
+          (identifier)
+          (number))))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (column_modifier
+        (identifier)))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (string_literal))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+CREATE TABLE with all clauses
+==================
+
+CREATE TABLE events (
+  event_id UInt64,
+  user_id UInt64,
+  timestamp DateTime
+) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(timestamp)
+ORDER BY (user_id, timestamp)
+PRIMARY KEY user_id
+SAMPLE BY user_id
+TTL timestamp + INTERVAL 30 DAY
+SETTINGS index_granularity = 8192
+COMMENT 'Event tracking table';
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (function_call
+        (identifier)
+        (identifier)))
+    (table_clause
+      (parenthesized_expression
+        (identifier)
+        (identifier)))
+    (table_clause
+      (identifier))
+    (table_clause
+      (identifier))
+    (table_clause
+      (binary_expression
+        (identifier)
+        (interval_expression
+          (number)
+          (identifier))))
+    (table_clause
+      (settings_list
+        (setting_pair
+          (identifier)
+          (number))))
+    (table_clause
+      (string_literal))))

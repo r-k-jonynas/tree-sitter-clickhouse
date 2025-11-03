@@ -22,12 +22,12 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "CREATE"
+          "type": "PATTERN",
+          "value": "[cC][rR][eE][aA][tT][eE]"
         },
         {
-          "type": "STRING",
-          "value": "TABLE"
+          "type": "PATTERN",
+          "value": "[tT][aA][bB][lL][eE]"
         },
         {
           "type": "CHOICE",
@@ -36,16 +36,16 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "STRING",
-                  "value": "IF"
+                  "type": "PATTERN",
+                  "value": "[iI][fF]"
                 },
                 {
-                  "type": "STRING",
-                  "value": "NOT"
+                  "type": "PATTERN",
+                  "value": "[nN][oO][tT]"
                 },
                 {
-                  "type": "STRING",
-                  "value": "EXISTS"
+                  "type": "PATTERN",
+                  "value": "[eE][xX][iI][sS][tT][sS]"
                 }
               ]
             },
@@ -92,8 +92,8 @@
           "value": ")"
         },
         {
-          "type": "STRING",
-          "value": "ENGINE"
+          "type": "PATTERN",
+          "value": "[eE][nN][gG][iI][nN][eE]"
         },
         {
           "type": "STRING",
@@ -121,6 +121,18 @@
             "type": "SYMBOL",
             "name": "table_clause"
           }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ";"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -180,8 +192,8 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "STRING",
-                  "value": "COMMENT"
+                  "type": "PATTERN",
+                  "value": "[cC][oO][mM][mM][eE][nN][tT]"
                 },
                 {
                   "type": "SYMBOL",
@@ -203,8 +215,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "DEFAULT"
+              "type": "PATTERN",
+              "value": "[dD][eE][fF][aA][uU][lL][tT]"
             },
             {
               "type": "SYMBOL",
@@ -216,8 +228,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "MATERIALIZED"
+              "type": "PATTERN",
+              "value": "[mM][aA][tT][eE][rR][iI][aA][lL][iI][zZ][eE][dD]"
             },
             {
               "type": "SYMBOL",
@@ -229,8 +241,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "ALIAS"
+              "type": "PATTERN",
+              "value": "[aA][lL][iI][aA][sS]"
             },
             {
               "type": "SYMBOL",
@@ -242,8 +254,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "CODEC"
+              "type": "PATTERN",
+              "value": "[cC][oO][dD][eE][cC]"
             },
             {
               "type": "SYMBOL",
@@ -255,8 +267,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "TTL"
+              "type": "PATTERN",
+              "value": "[tT][tT][lL]"
             },
             {
               "type": "SYMBOL",
@@ -339,8 +351,8 @@
           "value": "Date32"
         },
         {
-          "type": "STRING",
-          "value": "DateTime"
+          "type": "PATTERN",
+          "value": "[dD][aA][tT][eE][tT][iI][mM][eE]"
         },
         {
           "type": "STRING",
@@ -738,29 +750,12 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "PARTITION"
+              "type": "PATTERN",
+              "value": "[pP][aA][rR][tT][iI][tT][iI][oO][nN]"
             },
             {
-              "type": "STRING",
-              "value": "BY"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "_expression"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "ORDER"
-            },
-            {
-              "type": "STRING",
-              "value": "BY"
+              "type": "PATTERN",
+              "value": "[bB][yY]"
             },
             {
               "type": "SYMBOL",
@@ -772,29 +767,12 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "PRIMARY"
+              "type": "PATTERN",
+              "value": "[oO][rR][dD][eE][rR]"
             },
             {
-              "type": "STRING",
-              "value": "KEY"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "_expression"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "SAMPLE"
-            },
-            {
-              "type": "STRING",
-              "value": "BY"
+              "type": "PATTERN",
+              "value": "[bB][yY]"
             },
             {
               "type": "SYMBOL",
@@ -806,8 +784,12 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "TTL"
+              "type": "PATTERN",
+              "value": "[pP][rR][iI][mM][aA][rR][yY]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[kK][eE][yY]"
             },
             {
               "type": "SYMBOL",
@@ -819,8 +801,38 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "SETTINGS"
+              "type": "PATTERN",
+              "value": "[sS][aA][mM][pP][lL][eE]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[bB][yY]"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_expression"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[tT][tT][lL]"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_expression"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[sS][eE][tT][tT][iI][nN][gG][sS]"
             },
             {
               "type": "SYMBOL",
@@ -832,8 +844,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "COMMENT"
+              "type": "PATTERN",
+              "value": "[cC][oO][mM][mM][eE][nN][tT]"
             },
             {
               "type": "SYMBOL",
@@ -944,6 +956,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "interval_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "identifier"
         },
         {
@@ -953,6 +969,23 @@
         {
           "type": "SYMBOL",
           "name": "string_literal"
+        }
+      ]
+    },
+    "interval_expression": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[iI][nN][tT][eE][rR][vV][aA][lL]"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "number"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
         }
       ]
     },
@@ -1014,37 +1047,37 @@
                 "value": ">="
               },
               {
-                "type": "STRING",
-                "value": "AND"
+                "type": "PATTERN",
+                "value": "[aA][nN][dD]"
               },
               {
-                "type": "STRING",
-                "value": "OR"
+                "type": "PATTERN",
+                "value": "[oO][rR]"
               },
               {
-                "type": "STRING",
-                "value": "LIKE"
+                "type": "PATTERN",
+                "value": "[lL][iI][kK][eE]"
               },
               {
-                "type": "STRING",
-                "value": "IN"
+                "type": "PATTERN",
+                "value": "[iI][nN]"
               },
               {
                 "type": "SEQ",
                 "members": [
                   {
-                    "type": "STRING",
-                    "value": "IS"
+                    "type": "PATTERN",
+                    "value": "[iI][sS]"
                   },
                   {
-                    "type": "STRING",
-                    "value": "NOT"
+                    "type": "PATTERN",
+                    "value": "[nN][oO][tT]"
                   }
                 ]
               },
               {
-                "type": "STRING",
-                "value": "IS"
+                "type": "PATTERN",
+                "value": "[iI][sS]"
               }
             ]
           },
@@ -1073,8 +1106,8 @@
                 "value": "+"
               },
               {
-                "type": "STRING",
-                "value": "NOT"
+                "type": "PATTERN",
+                "value": "[nN][oO][tT]"
               }
             ]
           },
@@ -1155,8 +1188,29 @@
           "value": "("
         },
         {
-          "type": "SYMBOL",
-          "name": "_expression"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_expression"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_expression"
+                  }
+                ]
+              }
+            }
+          ]
         },
         {
           "type": "STRING",
@@ -1225,8 +1279,8 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "STRING",
-              "value": "CAST"
+              "type": "PATTERN",
+              "value": "[cC][aA][sS][tT]"
             },
             {
               "type": "STRING",
@@ -1243,8 +1297,8 @@
           "name": "_expression"
         },
         {
-          "type": "STRING",
-          "value": "AS"
+          "type": "PATTERN",
+          "value": "[aA][sS]"
         },
         {
           "type": "SYMBOL",

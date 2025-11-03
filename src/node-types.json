@@ -28,6 +28,10 @@
           "named": true
         },
         {
+          "type": "interval_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -72,6 +76,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interval_expression",
           "named": true
         },
         {
@@ -126,6 +134,10 @@
           "named": true
         },
         {
+          "type": "interval_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -174,6 +186,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interval_expression",
           "named": true
         },
         {
@@ -256,6 +272,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interval_expression",
           "named": true
         },
         {
@@ -371,6 +391,10 @@
           "named": true
         },
         {
+          "type": "interval_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -418,6 +442,10 @@
           "named": true
         },
         {
+          "type": "interval_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -437,11 +465,30 @@
     }
   },
   {
+    "type": "interval_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "parenthesized_expression",
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
@@ -462,6 +509,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interval_expression",
           "named": true
         },
         {
@@ -529,6 +580,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interval_expression",
           "named": true
         },
         {
@@ -615,6 +670,10 @@
           "named": true
         },
         {
+          "type": "interval_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -663,6 +722,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interval_expression",
           "named": true
         },
         {
@@ -749,6 +812,10 @@
     "named": false
   },
   {
+    "type": ";",
+    "named": false
+  },
+  {
     "type": "<",
     "named": false
   },
@@ -769,27 +836,11 @@
     "named": false
   },
   {
-    "type": "ALIAS",
-    "named": false
-  },
-  {
-    "type": "AND",
-    "named": false
-  },
-  {
-    "type": "AS",
-    "named": false
-  },
-  {
     "type": "AggregatingMergeTree",
     "named": false
   },
   {
     "type": "Array",
-    "named": false
-  },
-  {
-    "type": "BY",
     "named": false
   },
   {
@@ -805,27 +856,7 @@
     "named": false
   },
   {
-    "type": "CAST",
-    "named": false
-  },
-  {
-    "type": "CODEC",
-    "named": false
-  },
-  {
-    "type": "COMMENT",
-    "named": false
-  },
-  {
-    "type": "CREATE",
-    "named": false
-  },
-  {
     "type": "CollapsingMergeTree",
-    "named": false
-  },
-  {
-    "type": "DEFAULT",
     "named": false
   },
   {
@@ -834,10 +865,6 @@
   },
   {
     "type": "Date32",
-    "named": false
-  },
-  {
-    "type": "DateTime",
     "named": false
   },
   {
@@ -866,14 +893,6 @@
   },
   {
     "type": "Distributed",
-    "named": false
-  },
-  {
-    "type": "ENGINE",
-    "named": false
-  },
-  {
-    "type": "EXISTS",
     "named": false
   },
   {
@@ -909,23 +928,11 @@
     "named": false
   },
   {
-    "type": "IF",
-    "named": false
-  },
-  {
-    "type": "IN",
-    "named": false
-  },
-  {
     "type": "IPv4",
     "named": false
   },
   {
     "type": "IPv6",
-    "named": false
-  },
-  {
-    "type": "IS",
     "named": false
   },
   {
@@ -953,23 +960,11 @@
     "named": false
   },
   {
-    "type": "KEY",
-    "named": false
-  },
-  {
     "type": "Kafka",
     "named": false
   },
   {
-    "type": "LIKE",
-    "named": false
-  },
-  {
     "type": "Log",
-    "named": false
-  },
-  {
-    "type": "MATERIALIZED",
     "named": false
   },
   {
@@ -993,10 +988,6 @@
     "named": false
   },
   {
-    "type": "NOT",
-    "named": false
-  },
-  {
     "type": "Nested",
     "named": false
   },
@@ -1013,22 +1004,6 @@
     "named": false
   },
   {
-    "type": "OR",
-    "named": false
-  },
-  {
-    "type": "ORDER",
-    "named": false
-  },
-  {
-    "type": "PARTITION",
-    "named": false
-  },
-  {
-    "type": "PRIMARY",
-    "named": false
-  },
-  {
     "type": "PostgreSQL",
     "named": false
   },
@@ -1042,14 +1017,6 @@
   },
   {
     "type": "S3",
-    "named": false
-  },
-  {
-    "type": "SAMPLE",
-    "named": false
-  },
-  {
-    "type": "SETTINGS",
     "named": false
   },
   {
@@ -1070,14 +1037,6 @@
   },
   {
     "type": "SummingMergeTree",
-    "named": false
-  },
-  {
-    "type": "TABLE",
-    "named": false
-  },
-  {
-    "type": "TTL",
     "named": false
   },
   {

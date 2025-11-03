@@ -20,18 +20,19 @@ module.exports = grammar({
     ),
 
     create_table_statement: $ => seq(
-      "CREATE",
-      "TABLE",
-      optional(seq("IF", "NOT", "EXISTS")),
+      case_insensitive("CREATE"),
+      case_insensitive("TABLE"),
+      optional(seq(case_insensitive("IF"), case_insensitive("NOT"), case_insensitive("EXISTS"))),
       $.qualified_table_name,
       "(",
       commaSep1($.column_definition),
       ")",
-      "ENGINE",
+      case_insensitive("ENGINE"),
       "=",
       $.engine_name,
       optional($.engine_parameters),
-      repeat($.table_clause)
+      repeat($.table_clause),
+      optional(";")
     ),
 
     qualified_table_name: $ => choice(
@@ -43,15 +44,15 @@ module.exports = grammar({
       $.identifier,
       $._data_type,
       optional($.column_modifier),
-      optional(seq("COMMENT", $.string_literal))
+      optional(seq(case_insensitive("COMMENT"), $.string_literal))
     ),
 
     column_modifier: $ => choice(
-      seq("DEFAULT", $._expression),
-      seq("MATERIALIZED", $._expression),
-      seq("ALIAS", $._expression),
-      seq("CODEC", $.codec_expression),
-      seq("TTL", $._expression)
+      seq(case_insensitive("DEFAULT"), $._expression),
+      seq(case_insensitive("MATERIALIZED"), $._expression),
+      seq(case_insensitive("ALIAS"), $._expression),
+      seq(case_insensitive("CODEC"), $.codec_expression),
+      seq(case_insensitive("TTL"), $._expression)
     ),
 
     _data_type: $ => choice(
@@ -59,18 +60,20 @@ module.exports = grammar({
       $.complex_type
     ),
 
+    // Type names are case-sensitive (except DateTime which is explicitly case-insensitive in ClickHouse)
     primitive_type: $ => choice(
       "UInt8", "UInt16", "UInt32", "UInt64",
       "Int8", "Int16", "Int32", "Int64",
       "Float32", "Float64",
       "String", "FixedString",
-      "Date", "Date32", "DateTime", "DateTime64",
+      "Date", "Date32", case_insensitive("DateTime"), "DateTime64",
       "UUID", "IPv4", "IPv6",
       "Bool", "Boolean",
       "Decimal32", "Decimal64", "Decimal128", "Decimal256",
       "Enum8", "Enum16"
     ),
 
+    // Complex type constructors are case-sensitive
     complex_type: $ => choice(
       seq("Array", "(", $._data_type, ")"),
       seq("Tuple", "(", commaSep($._data_type), ")"),
@@ -79,6 +82,7 @@ module.exports = grammar({
       seq("Nullable", "(", $._data_type, ")")
     ),
 
+    // Engine names are case-sensitive (like type names, not SQL keywords)
     engine_name: $ => choice(
       "MergeTree",
       "ReplacingMergeTree",
@@ -119,13 +123,13 @@ module.exports = grammar({
     ),
 
     table_clause: $ => choice(
-      seq("PARTITION", "BY", $._expression),
-      seq("ORDER", "BY", $._expression),
-      seq("PRIMARY", "KEY", $._expression),
-      seq("SAMPLE", "BY", $._expression),
-      seq("TTL", $._expression),
-      seq("SETTINGS", $.settings_list),
-      seq("COMMENT", $.string_literal)
+      seq(case_insensitive("PARTITION"), case_insensitive("BY"), $._expression),
+      seq(case_insensitive("ORDER"), case_insensitive("BY"), $._expression),
+      seq(case_insensitive("PRIMARY"), case_insensitive("KEY"), $._expression),
+      seq(case_insensitive("SAMPLE"), case_insensitive("BY"), $._expression),
+      seq(case_insensitive("TTL"), $._expression),
+      seq(case_insensitive("SETTINGS"), $.settings_list),
+      seq(case_insensitive("COMMENT"), $.string_literal)
     ),
 
     settings_list: $ => seq(
@@ -152,9 +156,16 @@ module.exports = grammar({
       $.parenthesized_expression,
       $.array_expression,
       $.cast_expression,
+      $.interval_expression,
       $.identifier,
       $.number,
       $.string_literal
+    ),
+
+    interval_expression: $ => seq(
+      case_insensitive("INTERVAL"),
+      $.number,
+      $.identifier  // DAY, MONTH, YEAR, HOUR, etc.
     ),
 
     binary_expression: $ => prec.left(1, seq(
@@ -162,15 +173,15 @@ module.exports = grammar({
       choice(
         "+", "-", "*", "/", "%",
         "=", "!=", "<", ">", "<=", ">=",
-        "AND", "OR", "LIKE", "IN",
-        seq("IS", "NOT"),
-        "IS"
+        case_insensitive("AND"), case_insensitive("OR"), case_insensitive("LIKE"), case_insensitive("IN"),
+        seq(case_insensitive("IS"), case_insensitive("NOT")),
+        case_insensitive("IS")
       ),
       $._expression
     )),
 
     unary_expression: $ => prec.left(2, seq(
-      choice("-", "+", "NOT"),
+      choice("-", "+", case_insensitive("NOT")),
       $._expression
     )),
 
@@ -183,7 +194,7 @@ module.exports = grammar({
 
     parenthesized_expression: $ => seq(
       "(",
-      $._expression,
+      commaSep1($._expression),
       ")"
     ),
 
@@ -194,10 +205,10 @@ module.exports = grammar({
     ),
 
     cast_expression: $ => seq(
-      choice("CAST", "::"),
+      choice(case_insensitive("CAST"), "::"),
       "(",
       $._expression,
-      "AS",
+      case_insensitive("AS"),
       $._data_type,
       ")"
     ),
@@ -225,4 +236,12 @@ function commaSep(rule) {
 
 function commaSep1(rule) {
   return seq(rule, repeat(seq(",", rule)));
+}
+
+// Case-insensitive keyword helper for matching any case combination of the word
+// ClickHouse SQL keywords are case-insensitive
+function case_insensitive(word) {
+  return new RegExp(
+    word.replace(/[a-zA-Z]/g, char => `[${char.toLowerCase()}${char.toUpperCase()}]`)
+  );
 }
