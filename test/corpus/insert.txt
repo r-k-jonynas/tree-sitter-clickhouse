@@ -1,0 +1,136 @@
+==================
+Basic INSERT with VALUES
+==================
+
+INSERT INTO users VALUES (1, 'John');
+
+---
+
+(source_file
+  (insert_statement
+    (identifier)
+    (values_clause
+      (value_list
+        (number)
+        (string_literal)))))
+
+==================
+INSERT with column list
+==================
+
+INSERT INTO users (id, name) VALUES (1, 'John');
+
+---
+
+(source_file
+  (insert_statement
+    (identifier)
+    (column_list
+      (identifier)
+      (identifier))
+    (values_clause
+      (value_list
+        (number)
+        (string_literal)))))
+
+==================
+INSERT with multiple rows
+==================
+
+INSERT INTO users VALUES (1, 'John'), (2, 'Jane'), (3, 'Bob');
+
+---
+
+(source_file
+  (insert_statement
+    (identifier)
+    (values_clause
+      (value_list
+        (number)
+        (string_literal))
+      (value_list
+        (number)
+        (string_literal))
+      (value_list
+        (number)
+        (string_literal)))))
+
+==================
+INSERT with column list and multiple rows
+==================
+
+INSERT INTO users (id, name, email)
+VALUES
+  (1, 'John', 'john@example.com'),
+  (2, 'Jane', 'jane@example.com');
+
+---
+
+(source_file
+  (insert_statement
+    (identifier)
+    (column_list
+      (identifier)
+      (identifier)
+      (identifier))
+    (values_clause
+      (value_list
+        (number)
+        (string_literal)
+        (string_literal))
+      (value_list
+        (number)
+        (string_literal)
+        (string_literal)))))
+
+==================
+INSERT with SELECT
+==================
+
+INSERT INTO users_backup SELECT * FROM users;
+
+---
+
+(source_file
+  (insert_statement
+    (identifier)
+    (select_statement
+      (select_clause
+        (wildcard))
+      (from_clause
+        (identifier)))))
+
+==================
+INSERT with column list and SELECT
+==================
+
+INSERT INTO users_backup (id, name) SELECT id, name FROM users;
+
+---
+
+(source_file
+  (insert_statement
+    (identifier)
+    (column_list
+      (identifier)
+      (identifier))
+    (select_statement
+      (select_clause
+        (identifier)
+        (identifier))
+      (from_clause
+        (identifier)))))
+
+==================
+INSERT with FORMAT clause
+==================
+
+INSERT INTO users FORMAT CSV;
+
+---
+
+(source_file
+  (insert_statement
+    (identifier)
+    (format_clause
+      (identifier))))

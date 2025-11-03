@@ -15,9 +15,13 @@ module.exports = grammar({
   rules: {
     source_file: $ => repeat($._statement),
 
-    _statement: $ => choice(
-      $.create_table_statement,
-      $.select_statement
+    _statement: $ => seq(
+      choice(
+        $.create_table_statement,
+        $.select_statement,
+        $.insert_statement
+      ),
+      optional(";")
     ),
 
     create_table_statement: $ => seq(
@@ -32,8 +36,7 @@ module.exports = grammar({
       "=",
       $.engine_name,
       optional($.engine_parameters),
-      repeat($.table_clause),
-      optional(";")
+      repeat($.table_clause)
     ),
 
     // SELECT statement
@@ -43,8 +46,7 @@ module.exports = grammar({
       optional($.where_clause),
       optional($.group_by_clause),
       optional($.order_by_clause),
-      optional($.limit_clause),
-      optional(";")
+      optional($.limit_clause)
     ),
 
     select_clause: $ => seq(
@@ -90,6 +92,41 @@ module.exports = grammar({
     ),
 
     wildcard: $ => "*",
+
+    // INSERT statement
+    insert_statement: $ => seq(
+      case_insensitive("INSERT"),
+      case_insensitive("INTO"),
+      $.identifier,  // table name
+      optional($.column_list),
+      choice(
+        $.values_clause,
+        $.select_statement,
+        $.format_clause
+      )
+    ),
+
+    column_list: $ => seq(
+      "(",
+      commaSep1($.identifier),
+      ")"
+    ),
+
+    values_clause: $ => seq(
+      case_insensitive("VALUES"),
+      commaSep1($.value_list)
+    ),
+
+    value_list: $ => seq(
+      "(",
+      commaSep1($._expression),
+      ")"
+    ),
+
+    format_clause: $ => seq(
+      case_insensitive("FORMAT"),
+      $.identifier  // format name (CSV, JSON, etc.)
+    ),
 
     qualified_table_name: $ => choice(
       seq($.identifier, ".", $.identifier),
