@@ -16,7 +16,8 @@ module.exports = grammar({
     source_file: $ => repeat($._statement),
 
     _statement: $ => choice(
-      $.create_table_statement
+      $.create_table_statement,
+      $.select_statement
     ),
 
     create_table_statement: $ => seq(
@@ -34,6 +35,61 @@ module.exports = grammar({
       repeat($.table_clause),
       optional(";")
     ),
+
+    // SELECT statement
+    select_statement: $ => seq(
+      $.select_clause,
+      $.from_clause,
+      optional($.where_clause),
+      optional($.group_by_clause),
+      optional($.order_by_clause),
+      optional($.limit_clause),
+      optional(";")
+    ),
+
+    select_clause: $ => seq(
+      case_insensitive("SELECT"),
+      commaSep1(choice(
+        $.wildcard,
+        $.aliased_expression,
+        $._expression
+      ))
+    ),
+
+    from_clause: $ => seq(
+      case_insensitive("FROM"),
+      $.identifier  // table name
+    ),
+
+    where_clause: $ => seq(
+      case_insensitive("WHERE"),
+      $._expression
+    ),
+
+    group_by_clause: $ => seq(
+      case_insensitive("GROUP"),
+      case_insensitive("BY"),
+      commaSep1($._expression)
+    ),
+
+    order_by_clause: $ => seq(
+      case_insensitive("ORDER"),
+      case_insensitive("BY"),
+      commaSep1($._expression)
+    ),
+
+    limit_clause: $ => seq(
+      case_insensitive("LIMIT"),
+      $.number
+    ),
+
+    aliased_expression: $ => seq(
+      $._expression,
+      case_insensitive("AS"),
+      $.identifier
+    ),
+
+    wildcard: $ => "*",
 
     qualified_table_name: $ => choice(
       seq($.identifier, ".", $.identifier),
@@ -188,7 +244,7 @@ module.exports = grammar({
     function_call: $ => prec(1, seq(
       $.identifier,
       "(",
-      optional(commaSep($._expression)),
+      optional(commaSep(choice($.wildcard, $._expression))),
       ")"
     )),
 

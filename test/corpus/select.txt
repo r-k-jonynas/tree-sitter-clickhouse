@@ -1,0 +1,175 @@
+==================
+Basic SELECT *
+==================
+
+SELECT * FROM users;
+
+---
+
+(source_file
+  (select_statement
+    (select_clause
+      (wildcard))
+    (from_clause
+      (identifier))))
+
+==================
+SELECT with column list
+==================
+
+SELECT id, name, email FROM users;
+
+---
+
+(source_file
+  (select_statement
+    (select_clause
+      (identifier)
+      (identifier)
+      (identifier))
+    (from_clause
+      (identifier))))
+
+==================
+SELECT with WHERE clause
+==================
+
+SELECT * FROM users WHERE id = 1;
+
+---
+
+(source_file
+  (select_statement
+    (select_clause
+      (wildcard))
+    (from_clause
+      (identifier))
+    (where_clause
+      (binary_expression
+        (identifier)
+        (number)))))
+
+==================
+SELECT with ORDER BY
+==================
+
+SELECT * FROM users ORDER BY created_at;
+
+---
+
+(source_file
+  (select_statement
+    (select_clause
+      (wildcard))
+    (from_clause
+      (identifier))
+    (order_by_clause
+      (identifier))))
+
+==================
+SELECT with LIMIT
+==================
+
+SELECT * FROM users LIMIT 10;
+
+---
+
+(source_file
+  (select_statement
+    (select_clause
+      (wildcard))
+    (from_clause
+      (identifier))
+    (limit_clause
+      (number))))
+
+==================
+SELECT with multiple clauses
+==================
+
+SELECT id, name
+FROM users
+WHERE active = 1
+ORDER BY name
+LIMIT 100;
+
+---
+
+(source_file
+  (select_statement
+    (select_clause
+      (identifier)
+      (identifier))
+    (from_clause
+      (identifier))
+    (where_clause
+      (binary_expression
+        (identifier)
+        (number)))
+    (order_by_clause
+      (identifier))
+    (limit_clause
+      (number))))
+
+==================
+SELECT with column aliases
+==================
+
+SELECT id AS user_id, name AS user_name FROM users;
+
+---
+
+(source_file
+  (select_statement
+    (select_clause
+      (aliased_expression
+        (identifier)
+        (identifier))
+      (aliased_expression
+        (identifier)
+        (identifier)))
+    (from_clause
+      (identifier))))
+
+==================
+SELECT with aggregate functions
+==================
+
+SELECT count(*), sum(amount), avg(price) FROM orders;
+
+---
+
+(source_file
+  (select_statement
+    (select_clause
+      (function_call
+        (identifier)
+        (wildcard))
+      (function_call
+        (identifier)
+        (identifier))
+      (function_call
+        (identifier)
+        (identifier)))
+    (from_clause
+      (identifier))))
+
+==================
+SELECT with GROUP BY
+==================
+
+SELECT user_id, count(*) FROM orders GROUP BY user_id;
+
+---
+
+(source_file
+  (select_statement
+    (select_clause
+      (identifier)
+      (function_call
+        (identifier)
+        (wildcard)))
+    (from_clause
+      (identifier))
+    (group_by_clause
+      (identifier))))
