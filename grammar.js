@@ -29,6 +29,7 @@ module.exports = grammar({
       case_insensitive("TABLE"),
       optional(seq(case_insensitive("IF"), case_insensitive("NOT"), case_insensitive("EXISTS"))),
       $.qualified_table_name,
+      optional($.on_cluster_clause),
       "(",
       commaSep1($.column_definition),
       ")",
@@ -37,6 +38,12 @@ module.exports = grammar({
       $.engine_name,
       optional($.engine_parameters),
       repeat($.table_clause)
+    ),
+
+    on_cluster_clause: $ => seq(
+      case_insensitive("ON"),
+      case_insensitive("CLUSTER"),
+      $.identifier
     ),
 
     // SELECT statement
@@ -136,13 +143,22 @@ module.exports = grammar({
     column_definition: $ => seq(
       $.identifier,
       $._data_type,
-      optional($.column_modifier),
-      optional(seq(case_insensitive("COMMENT"), $.string_literal))
+      optional($.null_constraint),
+      repeat(choice(
+        $.column_modifier,
+        seq(case_insensitive("COMMENT"), $.string_literal)
+      ))
+    ),
+
+    null_constraint: $ => choice(
+      case_insensitive("NULL"),
+      seq(case_insensitive("NOT"), case_insensitive("NULL"))
     ),
 
     column_modifier: $ => choice(
       seq(case_insensitive("DEFAULT"), $._expression),
       seq(case_insensitive("MATERIALIZED"), $._expression),
+      seq(case_insensitive("EPHEMERAL"), $._expression),
       seq(case_insensitive("ALIAS"), $._expression),
       seq(case_insensitive("CODEC"), $.codec_expression),
       seq(case_insensitive("TTL"), $._expression)
@@ -236,9 +252,13 @@ module.exports = grammar({
       $._expression
     ),
 
-    codec_expression: $ => choice(
-      $.identifier,
-      seq($.identifier, "(", $._expression, ")")
+    codec_expression: $ => seq(
+      "(",
+      choice(
+        $.identifier,
+        seq($.identifier, "(", commaSep($._expression), ")")
+      ),
+      ")"
     ),
 
     // Expressions

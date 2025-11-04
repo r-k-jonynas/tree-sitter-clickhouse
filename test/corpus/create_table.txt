@@ -301,3 +301,159 @@ COMMENT 'Event tracking table';
           (number))))
     (table_clause
       (string_literal))))
+
+==================
+CREATE TABLE with ON CLUSTER
+==================
+
+CREATE TABLE events ON CLUSTER my_cluster (
+  id UInt64
+) ENGINE = MergeTree()
+ORDER BY id;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (on_cluster_clause
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+CREATE TABLE with NULL constraint
+==================
+
+CREATE TABLE users (
+  id UInt64 NOT NULL,
+  email String NULL
+) ENGINE = MergeTree()
+ORDER BY id;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (null_constraint))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (null_constraint))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+CREATE TABLE with EPHEMERAL modifier
+==================
+
+CREATE TABLE users (
+  id UInt64,
+  computed UInt64 EPHEMERAL id * 2
+) ENGINE = MergeTree()
+ORDER BY id;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (column_modifier
+        (binary_expression
+          (identifier)
+          (number))))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+CREATE TABLE with compression codec
+==================
+
+CREATE TABLE data (
+  id UInt64,
+  value String CODEC(ZSTD)
+) ENGINE = MergeTree()
+ORDER BY id;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (column_modifier
+        (codec_expression
+          (identifier))))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
+
+==================
+CREATE TABLE with all column features
+==================
+
+CREATE TABLE users (
+  id UInt64 NOT NULL,
+  name String NULL DEFAULT 'unknown' COMMENT 'User name' CODEC(LZ4),
+  deleted UInt8 EPHEMERAL 0
+) ENGINE = MergeTree()
+ORDER BY id;
+
+---
+
+(source_file
+  (create_table_statement
+    (qualified_table_name
+      (identifier))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (null_constraint))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (null_constraint)
+      (column_modifier
+        (string_literal))
+      (string_literal)
+      (column_modifier
+        (codec_expression
+          (identifier))))
+    (column_definition
+      (identifier)
+      (primitive_type)
+      (column_modifier
+        (number)))
+    (engine_name)
+    (engine_parameters)
+    (table_clause
+      (identifier))))
