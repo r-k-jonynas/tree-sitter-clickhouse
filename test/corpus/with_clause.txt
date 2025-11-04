@@ -1,0 +1,161 @@
+==================
+Simple CTE
+==================
+
+WITH users_cte AS (
+  SELECT id, name FROM users
+)
+SELECT * FROM users_cte;
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cte
+        (identifier)
+        (select_statement
+          (select_clause
+            (identifier)
+            (identifier))
+          (from_clause
+            (qualified_table_name
+              (identifier))))))
+    (select_clause
+      (wildcard))
+    (from_clause
+      (qualified_table_name
+        (identifier)))))
+
+==================
+Multiple CTEs
+==================
+
+WITH
+  active_users AS (
+    SELECT id, name FROM users WHERE status = 'active'
+  ),
+  recent_orders AS (
+    SELECT user_id, order_date FROM orders WHERE order_date > '2024-01-01'
+  )
+SELECT name, order_date
+FROM active_users;
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cte
+        (identifier)
+        (select_statement
+          (select_clause
+            (identifier)
+            (identifier))
+          (from_clause
+            (qualified_table_name
+              (identifier)))
+          (where_clause
+            (binary_expression
+              (identifier)
+              (string_literal)))))
+      (cte
+        (identifier)
+        (select_statement
+          (select_clause
+            (identifier)
+            (identifier))
+          (from_clause
+            (qualified_table_name
+              (identifier)))
+          (where_clause
+            (binary_expression
+              (identifier)
+              (string_literal))))))
+    (select_clause
+      (identifier)
+      (identifier))
+    (from_clause
+      (qualified_table_name
+        (identifier)))))
+
+==================
+Nested CTE
+==================
+
+WITH outer_cte AS (
+  WITH inner_cte AS (
+    SELECT id FROM users
+  )
+  SELECT id FROM inner_cte
+)
+SELECT * FROM outer_cte;
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cte
+        (identifier)
+        (select_statement
+          (with_clause
+            (cte
+              (identifier)
+              (select_statement
+                (select_clause
+                  (identifier))
+                (from_clause
+                  (qualified_table_name
+                    (identifier))))))
+          (select_clause
+            (identifier))
+          (from_clause
+            (qualified_table_name
+              (identifier))))))
+    (select_clause
+      (wildcard))
+    (from_clause
+      (qualified_table_name
+        (identifier)))))
+
+==================
+CTE with aggregation
+==================
+
+WITH user_totals AS (
+  SELECT user_id, SUM(amount) as total
+  FROM orders
+  GROUP BY user_id
+)
+SELECT * FROM user_totals WHERE total > 1000;
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cte
+        (identifier)
+        (select_statement
+          (select_clause
+            (identifier)
+            (aliased_expression
+              (function_call
+                (identifier)
+                (identifier))
+              (identifier)))
+          (from_clause
+            (qualified_table_name
+              (identifier)))
+          (group_by_clause
+            (identifier)))))
+    (select_clause
+      (wildcard))
+    (from_clause
+      (qualified_table_name
+        (identifier)))
+    (where_clause
+      (binary_expression
+        (identifier)
+        (number)))))

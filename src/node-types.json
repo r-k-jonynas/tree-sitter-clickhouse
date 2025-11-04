@@ -32,6 +32,10 @@
           "named": true
         },
         {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -83,6 +87,10 @@
           "named": true
         },
         {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -131,6 +139,10 @@
         },
         {
           "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
           "named": true
         },
         {
@@ -189,6 +201,10 @@
           "named": true
         },
         {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -241,6 +257,10 @@
         },
         {
           "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
           "named": true
         },
         {
@@ -349,6 +369,10 @@
           "named": true
         },
         {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -432,6 +456,80 @@
     }
   },
   {
+    "type": "cse",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "array_expression",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "cast_expression",
+          "named": true
+        },
+        {
+          "type": "function_call",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "cte",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "select_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "engine_name",
     "named": true,
     "fields": {}
@@ -466,6 +564,10 @@
         },
         {
           "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
           "named": true
         },
         {
@@ -511,7 +613,11 @@
       "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "qualified_table_name",
+          "named": true
+        },
+        {
+          "type": "select_statement",
           "named": true
         }
       ]
@@ -547,6 +653,10 @@
         },
         {
           "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
           "named": true
         },
         {
@@ -602,6 +712,10 @@
         },
         {
           "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
           "named": true
         },
         {
@@ -674,6 +788,61 @@
     }
   },
   {
+    "type": "lambda_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "array_expression",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "cast_expression",
+          "named": true
+        },
+        {
+          "type": "function_call",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "limit_clause",
     "named": true,
     "fields": {},
@@ -717,6 +886,21 @@
       "required": true,
       "types": [
         {
+          "type": "order_by_item",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "order_by_item",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
           "type": "array_expression",
           "named": true
         },
@@ -738,6 +922,10 @@
         },
         {
           "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
           "named": true
         },
         {
@@ -792,11 +980,19 @@
           "named": true
         },
         {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
         {
           "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "select_statement",
           "named": true
         },
         {
@@ -867,6 +1063,10 @@
           "named": true
         },
         {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -920,6 +1120,10 @@
         {
           "type": "where_clause",
           "named": true
+        },
+        {
+          "type": "with_clause",
+          "named": true
         }
       ]
     }
@@ -954,6 +1158,10 @@
         },
         {
           "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
           "named": true
         },
         {
@@ -1052,6 +1260,10 @@
           "named": true
         },
         {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -1107,6 +1319,10 @@
           "named": true
         },
         {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -1155,6 +1371,10 @@
         },
         {
           "type": "interval_expression",
+          "named": true
+        },
+        {
+          "type": "lambda_expression",
           "named": true
         },
         {
@@ -1224,6 +1444,10 @@
           "named": true
         },
         {
+          "type": "lambda_expression",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -1246,6 +1470,25 @@
     "type": "wildcard",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "with_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "cse",
+          "named": true
+        },
+        {
+          "type": "cte",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "!=",
@@ -1293,6 +1536,10 @@
   },
   {
     "type": "--",
+    "named": false
+  },
+  {
+    "type": "->",
     "named": false
   },
   {

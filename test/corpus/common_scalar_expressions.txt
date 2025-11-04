@@ -1,0 +1,244 @@
+==================
+CSE with constant expression
+==================
+
+WITH '2019-08-01 15:23:00' AS ts_upper_bound
+SELECT *
+FROM hits
+WHERE EventDate = toDate(ts_upper_bound);
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cse
+        (string_literal)
+        (identifier)))
+    (select_clause
+      (wildcard))
+    (from_clause
+      (qualified_table_name
+        (identifier)))
+    (where_clause
+      (binary_expression
+        (identifier)
+        (function_call
+          (identifier)
+          (identifier))))))
+
+==================
+CSE with lambda function - single parameter
+==================
+
+WITH (id) -> concat(lower(id), '.txt') AS gen_name
+SELECT gen_name('test') as file_name FROM users;
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cse
+        (lambda_expression
+          (identifier)
+          (function_call
+            (identifier)
+            (function_call
+              (identifier)
+              (identifier))
+            (string_literal)))
+        (identifier)))
+    (select_clause
+      (aliased_expression
+        (function_call
+          (identifier)
+          (string_literal))
+        (identifier)))
+    (from_clause
+      (qualified_table_name
+        (identifier)))))
+
+==================
+CSE with lambda function - multiple parameters
+==================
+
+WITH
+  '.txt' as extension,
+  (id, extension) -> concat(lower(id), extension) AS gen_name
+SELECT gen_name('test', '.sql') as file_name FROM users;
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cse
+        (string_literal)
+        (identifier))
+      (cse
+        (lambda_expression
+          (identifier)
+          (identifier)
+          (function_call
+            (identifier)
+            (function_call
+              (identifier)
+              (identifier))
+            (identifier)))
+        (identifier)))
+    (select_clause
+      (aliased_expression
+        (function_call
+          (identifier)
+          (string_literal)
+          (string_literal))
+        (identifier)))
+    (from_clause
+      (qualified_table_name
+        (identifier)))))
+
+==================
+CSE with scalar subquery
+==================
+
+WITH
+  (SELECT sum(bytes) FROM system.parts WHERE active) AS total_disk_usage
+SELECT
+  (sum(bytes) / total_disk_usage) * 100 AS table_disk_usage,
+  table
+FROM system.parts
+GROUP BY table
+ORDER BY table_disk_usage DESC
+LIMIT 10;
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cse
+        (parenthesized_expression
+          (select_statement
+            (select_clause
+              (function_call
+                (identifier)
+                (identifier)))
+            (from_clause
+              (qualified_table_name
+                (identifier)
+                (identifier)))
+            (where_clause
+              (identifier))))
+        (identifier)))
+    (select_clause
+      (aliased_expression
+        (binary_expression
+          (parenthesized_expression
+            (binary_expression
+              (function_call
+                (identifier)
+                (identifier))
+              (identifier)))
+          (number))
+        (identifier))
+      (identifier))
+    (from_clause
+      (qualified_table_name
+        (identifier)
+        (identifier)))
+    (group_by_clause
+      (identifier))
+    (order_by_clause
+      (order_by_item
+        (identifier)))
+    (limit_clause
+      (number))))
+
+==================
+CSE with aggregation function
+==================
+
+WITH sum(bytes) AS s
+SELECT
+  formatReadableSize(s),
+  table
+FROM system.parts
+GROUP BY table
+ORDER BY s;
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cse
+        (function_call
+          (identifier)
+          (identifier))
+        (identifier)))
+    (select_clause
+      (function_call
+        (identifier)
+        (identifier))
+      (identifier))
+    (from_clause
+      (qualified_table_name
+        (identifier)
+        (identifier)))
+    (group_by_clause
+      (identifier))
+    (order_by_clause
+      (order_by_item
+        (identifier)))))
+
+==================
+Mixed CTEs and CSEs
+==================
+
+WITH
+  '.txt' AS extension,
+  active_users AS (
+    SELECT id, name FROM users WHERE status = 'active'
+  ),
+  (id, ext) -> concat(id, ext) AS make_filename
+SELECT make_filename(name, extension) FROM active_users;
+
+---
+
+(source_file
+  (select_statement
+    (with_clause
+      (cse
+        (string_literal)
+        (identifier))
+      (cte
+        (identifier)
+        (select_statement
+          (select_clause
+            (identifier)
+            (identifier))
+          (from_clause
+            (qualified_table_name
+              (identifier)))
+          (where_clause
+            (binary_expression
+              (identifier)
+              (string_literal)))))
+      (cse
+        (lambda_expression
+          (identifier)
+          (identifier)
+          (function_call
+            (identifier)
+            (identifier)
+            (identifier)))
+        (identifier)))
+    (select_clause
+      (function_call
+        (identifier)
+        (identifier)
+        (identifier)))
+    (from_clause
+      (qualified_table_name
+        (identifier)))))

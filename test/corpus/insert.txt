@@ -98,7 +98,8 @@ INSERT INTO users_backup SELECT * FROM users;
       (select_clause
         (wildcard))
       (from_clause
-        (identifier)))))
+        (qualified_table_name
+          (identifier))))))
 
 ==================
 INSERT with column list and SELECT
@@ -119,7 +120,8 @@ INSERT INTO users_backup (id, name) SELECT id, name FROM users;
         (identifier)
         (identifier))
       (from_clause
-        (identifier)))))
+        (qualified_table_name
+          (identifier))))))
 
 ==================
 INSERT with FORMAT clause

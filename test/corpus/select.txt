@@ -11,7 +11,8 @@ SELECT * FROM users;
     (select_clause
       (wildcard))
     (from_clause
-      (identifier))))
+      (qualified_table_name
+        (identifier)))))
 
 ==================
 SELECT with column list
@@ -28,7 +29,8 @@ SELECT id, name, email FROM users;
       (identifier)
       (identifier))
     (from_clause
-      (identifier))))
+      (qualified_table_name
+        (identifier)))))
 
 ==================
 SELECT with WHERE clause
@@ -43,7 +45,8 @@ SELECT * FROM users WHERE id = 1;
     (select_clause
       (wildcard))
     (from_clause
-      (identifier))
+      (qualified_table_name
+        (identifier)))
     (where_clause
       (binary_expression
         (identifier)
@@ -62,9 +65,11 @@ SELECT * FROM users ORDER BY created_at;
     (select_clause
       (wildcard))
     (from_clause
-      (identifier))
+      (qualified_table_name
+        (identifier)))
     (order_by_clause
-      (identifier))))
+      (order_by_item
+        (identifier)))))
 
 ==================
 SELECT with LIMIT
@@ -79,7 +84,8 @@ SELECT * FROM users LIMIT 10;
     (select_clause
       (wildcard))
     (from_clause
-      (identifier))
+      (qualified_table_name
+        (identifier)))
     (limit_clause
       (number))))
 
@@ -101,13 +107,15 @@ LIMIT 100;
       (identifier)
       (identifier))
     (from_clause
-      (identifier))
+      (qualified_table_name
+        (identifier)))
     (where_clause
       (binary_expression
         (identifier)
         (number)))
     (order_by_clause
-      (identifier))
+      (order_by_item
+        (identifier)))
     (limit_clause
       (number))))
 
@@ -129,7 +137,8 @@ SELECT id AS user_id, name AS user_name FROM users;
         (identifier)
         (identifier)))
     (from_clause
-      (identifier))))
+      (qualified_table_name
+        (identifier)))))
 
 ==================
 SELECT with aggregate functions
@@ -152,7 +161,8 @@ SELECT count(*), sum(amount), avg(price) FROM orders;
         (identifier)
         (identifier)))
     (from_clause
-      (identifier))))
+      (qualified_table_name
+        (identifier)))))
 
 ==================
 SELECT with GROUP BY
@@ -170,6 +180,7 @@ SELECT user_id, count(*) FROM orders GROUP BY user_id;
         (identifier)
         (wildcard)))
     (from_clause
-      (identifier))
+      (qualified_table_name
+        (identifier)))
     (group_by_clause
       (identifier))))

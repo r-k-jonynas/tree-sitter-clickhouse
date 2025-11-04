@@ -12,6 +12,10 @@ module.exports = grammar({
 
   extras: $ => [/\s/, $.comment],
 
+  conflicts: $ => [
+    [$.lambda_expression, $._expression],
+  ],
+
   rules: {
     source_file: $ => repeat($._statement),
 
@@ -48,6 +52,7 @@ module.exports = grammar({
 
     // SELECT statement
     select_statement: $ => seq(
+      optional($.with_clause),
       $.select_clause,
       $.from_clause,
       optional($.where_clause),
@@ -55,6 +60,31 @@ module.exports = grammar({
       optional($.order_by_clause),
       optional($.limit_clause)
     ),
+
+    // WITH clause for Common Table Expressions (CTEs) and Common Scalar Expressions (CSEs)
+    with_clause: $ => seq(
+      case_insensitive("WITH"),
+      commaSep1(choice(
+        $.cte,  // Try CTE first (has opening paren after AS)
+        $.cse   // Fallback to CSE
+      ))
+    ),
+
+    // Common Table Expression (CTE) - higher precedence due to explicit parentheses
+    cte: $ => prec(2, seq(
+      $.identifier,  // CTE name
+      case_insensitive("AS"),
+      "(",
+      $.select_statement,
+      ")"
+    )),
+
+    // Common Scalar Expression (CSE)
+    cse: $ => prec(1, seq(
+      $._expression,  // The expression (can be constant, lambda, subquery, etc.)
+      case_insensitive("AS"),
+      $.identifier    // Alias name
+    )),
 
     select_clause: $ => seq(
       case_insensitive("SELECT"),
@@ -67,7 +97,10 @@ module.exports = grammar({
 
     from_clause: $ => seq(
       case_insensitive("FROM"),
-      $.identifier  // table name
+      choice(
+        $.qualified_table_name,  // includes simple identifier as a choice
+        seq("(", $.select_statement, ")")  // subquery
+      )
     ),
 
     where_clause: $ => seq(
@@ -84,7 +117,15 @@ module.exports = grammar({
     order_by_clause: $ => seq(
       case_insensitive("ORDER"),
       case_insensitive("BY"),
-      commaSep1($._expression)
+      commaSep1($.order_by_item)
+    ),
+
+    order_by_item: $ => seq(
+      $._expression,
+      optional(choice(
+        case_insensitive("ASC"),
+        case_insensitive("DESC")
+      ))
     ),
 
     limit_clause: $ => seq(
@@ -266,6 +307,7 @@ module.exports = grammar({
       $.binary_expression,
       $.unary_expression,
       $.function_call,
+      $.lambda_expression,
       $.parenthesized_expression,
       $.array_expression,
       $.cast_expression,
@@ -274,6 +316,17 @@ module.exports = grammar({
       $.number,
       $.string_literal
     ),
+
+    // Lambda expression for higher-order functions
+    // Syntax: (param1, param2, ...) -> expression
+    lambda_expression: $ => prec.right(seq(
+      choice(
+        $.identifier,  // Single parameter without parens: x -> x * 2
+        seq("(", commaSep($.identifier), ")")  // Multiple parameters: (x, y) -> x + y
+      ),
+      "->",
+      $._expression
+    )),
 
     interval_expression: $ => seq(
       case_insensitive("INTERVAL"),
@@ -307,7 +360,10 @@ module.exports = grammar({
 
     parenthesized_expression: $ => seq(
       "(",
-      commaSep1($._expression),
+      choice(
+        $.select_statement,  // Subquery: (SELECT ...)
+        commaSep1($._expression)  // Expression list: (1, 2, 3)
+      ),
       ")"
     ),
 
